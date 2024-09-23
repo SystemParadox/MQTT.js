@@ -798,16 +798,9 @@ export default class MqttClient extends TypedEventEmitter<MqttClientEventCallbac
 		}
 
 		const streamErrorHandler = (error) => {
+			// Emit all errors (see #1939)
 			this.log('streamErrorHandler :: error', error.message)
-			// error.code will only be set on NodeJS env, browser don't allow to detect errors on sockets
-			// also emitting errors on browsers seems to create issues
-			if (error.code) {
-				// handle error
-				this.log('streamErrorHandler :: emitting error')
-				this.emit('error', error)
-			} else {
-				this.noop(error)
-			}
+			this.emit('error', error)
 		}
 
 		this.log('connect :: pipe stream to writable stream')

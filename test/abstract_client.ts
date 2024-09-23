@@ -477,6 +477,15 @@ export default function abstractTest(server, config, ports) {
 			})
 		})
 
+		it('should emit error events from invalid connection options', function _test(t, done) {
+			const client = connect({ password: 'xxx' })
+
+			client.on('error', (e: any) => {
+				assert.equal(e.message, 'Username is required to use password')
+				client.end((err) => done(err))
+			})
+		})
+
 		it('should have different client ids', function _test(t, done) {
 			// bug identified in this test: the client.end callback is invoked twice, once when the `end`
 			// method completes closing the stores and invokes the callback, and another time when the
